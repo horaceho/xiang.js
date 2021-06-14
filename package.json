@@ -1,0 +1,24 @@
+{
+  "name": "xiang.js",
+  "version": "0.0.1",
+  "description": "A simple Javascript Xiangqi AI",
+  "main": "xiang.js",
+  "scripts": {
+    "test": "echo \"No error\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/horaceho/xiang.js.git"
+  },
+  "keywords": [
+    "chinese chess",
+    "xiang",
+    "xiangqi"
+  ],
+  "author": "Horace Ho",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/horaceho/xiang.js/issues"
+  },
+  "homepage": "https://github.com/horaceho/xiang.js#readme"
+}
