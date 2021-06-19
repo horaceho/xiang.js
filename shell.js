@@ -1,5 +1,7 @@
-const { Xiang } = require('./xiang.js')
-const xiang = new Xiang()
+const { Xiang } = require('./xiang.js');
+const xiang = new Xiang();
+const { Parse } = require('./parse.js');
+const parse = new Parse();
 const readline = require('readline');
 interface = readline.createInterface(process.stdin, process.stdout);
 
@@ -7,10 +9,10 @@ prefix = '> ';
 interface.setPrompt(prefix, prefix.length);
 interface.prompt();
 interface.on('line', function (line) {
-    text = line.trim();
-    switch (text) {
+    let { groups: { key, value } } = /(?<key>\w*)\s*(?<value>.*)/gm.exec(line.trim());
+    switch (key) {
         case 'hello':
-            console.log(text + ' world!');
+            console.log(`${key} "${value}"!`);
             break;
         case 'ascii':
             xiang.ascii();
@@ -26,12 +28,15 @@ interface.on('line', function (line) {
         case 'version':
             console.log(xiang.version());
             break;
+        case 'load':
+            parse.load(value);
+            break;
         case 'exit':
             console.log('Bye!');
             process.exit(0);
             break;
         default:
-            console.log(text);
+            if (key) console.log(`${key} ${value}`);
             break;
     }
     interface.setPrompt(prefix, prefix.length);
