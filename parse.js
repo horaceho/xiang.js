@@ -2,22 +2,18 @@ const fs = require("fs");
 const readline = require("readline");
 
 var Parse = function (text) {
-    function load(filename) {
-        var interface = readline.createInterface({
-            input: fs.createReadStream(filename),
-        });
-        interface
-            .on("line", function (line) {
-                console.log("- ", line);
-            })
-            .on("error", (error) => {
-                console.log(filename, "!");
-            });
+    function file(filename) {
+        var text = fs.readFileSync(filename, 'utf8');
+        let regex = /\[(?<key>\S+)\s(?<value>.+)\]/gm;
+        let results = text.matchAll(regex);
+        for (let result of results) {
+            console.log(result.groups.key, ":", result.groups.value);
+        }
     }
 
     return {
-        load: function (filename) {
-            return load(filename);
+        file: function (filename) {
+            return file(filename);
         },
     };
 };

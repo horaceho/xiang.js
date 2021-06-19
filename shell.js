@@ -28,8 +28,8 @@ interface.on('line', function (line) {
         case 'version':
             console.log(xiang.version());
             break;
-        case 'load':
-            parse.load(value);
+        case 'file':
+            parse.file(value);
             break;
         case 'exit':
             console.log('Bye!');
