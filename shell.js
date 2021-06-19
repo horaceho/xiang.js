@@ -13,7 +13,15 @@ interface.on('line', function (line) {
             console.log(text + ' world!');
             break;
         case 'ascii':
-            console.log(xiang.ascii());
+            xiang.ascii();
+            break;
+        case 'empty':
+            xiang.empty();
+            xiang.ascii();
+            break;
+        case 'start':
+            xiang.start();
+            xiang.ascii();
             break;
         case 'version':
             console.log(xiang.version());
