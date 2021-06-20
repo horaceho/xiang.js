@@ -29,7 +29,8 @@ interface.on('line', function (line) {
             console.log(xiang.version());
             break;
         case 'file':
-            parse.file(value);
+            game = parse.file(value);
+            console.log(game);
             break;
         case 'exit':
             console.log('Bye!');
