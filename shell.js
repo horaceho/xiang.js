@@ -30,7 +30,11 @@ interface.on('line', function (line) {
             break;
         case 'file':
             game = parse.file(value);
-            console.log(game);
+            moves = xiang.load(game);
+            console.log(`${moves} moves`);
+            break;
+        case 'fen':
+            console.log(xiang.fen());
             break;
         case 'exit':
             console.log('Bye!');

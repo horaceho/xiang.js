@@ -20,7 +20,7 @@ var Parse = function (text) {
                 chunks = info.split(/\s+/);
                 key = chunks.shift();
                 value = chunks.join(" ");
-                game.infos[key] = value;
+                game.infos[key] = value.replace(/^"|"$/g, '');
             } else if (result.groups.note !== undefined) {
                 note = result.groups.note.replace(/\{|\}/g, "");
                 game.moves[game.count]["Note"] = note;

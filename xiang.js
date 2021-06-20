@@ -2,13 +2,13 @@ var Xiang = function (fen) {
 
     const Space = '　';
 
-    const names = [
+    const Names = [
         '・', '・', '・', '・', '・', '・', '・', '・',
         '帥', '仕', '相', '傌', '俥', '炮', '兵', '・',
         '將', '士', '象', '馬', '車', '砲', '卒', '・',
     ];
 
-    const grids = [
+    const Grids = [
         '・','－','－','－','－','－','－','－','・',
         '｜','・','・','・','・','・','・','・','｜',
         '｜','＋','・','・','・','・','・','＋','｜',
@@ -81,7 +81,27 @@ var Xiang = function (fen) {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
 
+    Game = {
+        "Empty": {
+            infos: {
+                "FEN": "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1",
+            },
+            count: 0,
+            moves: [{}],
+            result: "",
+        }
+    }
+
     var board = Start;
+    var xiang = {
+        "game": Game.Empty,
+    }
+
+    function load(game) {
+        xiang.game = game;
+
+        return xiang.game.count;
+    }
 
     function ascii() {
         const Digits = '１２３４５６７８９';
@@ -96,7 +116,7 @@ var Xiang = function (fen) {
             for (var col = 3; col <= 3 + 8; col++) {
                 index = (row - 3) * 9 + col - 3;
                 value = board[row * 16 + col];
-                ascii += (value > 1) ? names[value] : grids[index];
+                ascii += (value > 1) ? Names[value] : Grids[index];
             }
             ascii += "\n";
         }
@@ -113,6 +133,12 @@ var Xiang = function (fen) {
         },
         start: function () {
             board = Start;
+        },
+        load: function (game) {
+            return load(game);
+        },
+        fen: function () {
+            return xiang.game.infos.FEN;
         },
         ascii: function () {
             return ascii();
