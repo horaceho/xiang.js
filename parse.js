@@ -2,7 +2,7 @@ const fs = require("fs");
 const readline = require("readline");
 
 var Parse = function (text) {
-    function file(filename) {
+    function open(filename) {
         var game = {
             infos: {},
             count: 0,
@@ -42,8 +42,8 @@ var Parse = function (text) {
     }
 
     return {
-        file: function (filename) {
-            return file(filename);
+        open: function (filename) {
+            return open(filename);
         },
     };
 };

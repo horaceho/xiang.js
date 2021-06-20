@@ -28,8 +28,8 @@ interface.on('line', function (line) {
         case 'version':
             console.log(xiang.version());
             break;
-        case 'file':
-            game = parse.file(value);
+        case 'load':
+            game = parse.open(value);
             moves = xiang.load(game);
             console.log(`${moves} moves`);
             break;

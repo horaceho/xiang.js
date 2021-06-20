@@ -4,9 +4,14 @@ var Xiang = function (fen) {
 
     const Names = [
         '・', '・', '・', '・', '・', '・', '・', '・',
-        '帥', '仕', '相', '傌', '俥', '炮', '兵', '・',
         '將', '士', '象', '馬', '車', '砲', '卒', '・',
+        '帥', '仕', '相', '傌', '俥', '炮', '兵', '・',
     ];
+
+    const Pieces = {
+        "k":  8, "a":  9, "b": 10, "e": 10, "n": 11, "h": 11, "r": 12, "c": 13, "p": 14,
+        "K": 16, "A": 17, "B": 18, "E": 18, "N": 19, "H": 19, "R": 20, "C": 21, "P": 22,
+    }
 
     const Grids = [
         '・','－','－','－','－','－','－','－','・',
@@ -41,7 +46,7 @@ var Xiang = function (fen) {
     const C = 21;
     const P = 22;
 
-    const Version = "0.0.2";
+    const Version = "0.0.3";
 
     const Empty = [
         1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -98,9 +103,44 @@ var Xiang = function (fen) {
     }
 
     function load(game) {
-        xiang.game = game;
+        clear();
+        var row = 0;
+        var col = 0;
+        let fen = game.infos.FEN;
+        let parts = fen.split(" ");
+        if (parts.length === 6) {
+            let lines = parts[0].split("/");
+            if (lines.length === 10) {
+                for (let line of lines) {
+                    col = 0;
+                    let chars = line.split("");
+                    for (let one of chars) {
+                        if (one.match(/\d/)) {
+                            col += Number(one);
+                        } else {
+                            place(row, col, one);
+                            col += 1;
+                        }
+                    }
+                    row += 1;
+                }
+            }
+        }
 
-        return xiang.game.count;
+        if (row === 10 && col === 9) {
+            xiang.game = game;
+        }
+
+        return game.count;
+    }
+
+    function place(row, col, one) {
+        index = (row + 3) * 16 + 3 + col;
+        board[index] = Pieces[one];
+    }
+
+    function clear() {
+        board = Empty;
     }
 
     function ascii() {
