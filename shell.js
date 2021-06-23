@@ -20,8 +20,8 @@ interface.on('line', function (line) {
         case 'moves':
             xiang.moves();
             break;
-        case 'empty':
-            xiang.empty();
+        case 'clear':
+            xiang.clear();
             xiang.ascii();
             break;
         case 'start':
@@ -34,7 +34,7 @@ interface.on('line', function (line) {
         case 'load':
             game = parse.open(value);
             moves = xiang.load(game);
-            console.log(`${moves} moves`);
+            xiang.ascii();
             break;
         case 'fen':
             console.log(xiang.fen());

@@ -58,7 +58,7 @@ var Xiang = function (fen) {
 
     const Version = "0.0.3";
 
-    const Empty = [
+    const Clear = [
         1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -113,7 +113,7 @@ var Xiang = function (fen) {
     }
 
     function load(game) {
-        clear();
+        board = Clear;
         var row = 0;
         var col = 0;
         let fen = game.infos.FEN;
@@ -149,10 +149,6 @@ var Xiang = function (fen) {
         board[index] = Pieces[one];
     }
 
-    function clear() {
-        board = Empty;
-    }
-
     function ascii() {
         const Digits = '１２３４５６７８９';
         const Soujis = '九八七六五四三二一';
@@ -175,7 +171,7 @@ var Xiang = function (fen) {
     }
 
     function moves() {
-        for (let move of game.moves) {
+        for (let move of xiang.game.moves) {
             console.log(`${move.Move ?? ""} ${move.Note ?? ""}`);
         }
     }
@@ -184,11 +180,11 @@ var Xiang = function (fen) {
         version: function () {
             return Version;
         },
-        empty: function () {
-            board = Empty;
-        },
         start: function () {
             board = Start;
+        },
+        clear: function () {
+            board = Clear;
         },
         load: function (game) {
             return load(game);
