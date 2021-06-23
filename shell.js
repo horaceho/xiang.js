@@ -17,6 +17,9 @@ interface.on('line', function (line) {
         case 'ascii':
             xiang.ascii();
             break;
+        case 'moves':
+            xiang.moves();
+            break;
         case 'empty':
             xiang.empty();
             xiang.ascii();

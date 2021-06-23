@@ -1,6 +1,6 @@
 {
   "name": "xiang.js",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A simple Javascript Xiangqi AI",
   "main": "xiang.js",
   "scripts": {
