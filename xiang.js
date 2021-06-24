@@ -172,7 +172,7 @@ var Xiang = function (fen) {
 
     function moves() {
         for (let move of xiang.game.moves) {
-            console.log(`${move.Move ?? ""} ${move.Note ?? ""}`);
+            console.log(`${move.Move ?? ""} {${move.Note ?? ""}}`);
         }
     }
 

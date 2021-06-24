@@ -2,6 +2,11 @@ const fs = require("fs");
 const readline = require("readline");
 
 var Parse = function (text) {
+
+    function isEmpty(value) {
+        return Object.keys(value).length === 0 && value.constructor === Object;
+    }
+
     function open(filename) {
         var game = {
             infos: {},
@@ -27,10 +32,10 @@ var Parse = function (text) {
             } else if (result.groups.result !== undefined) {
                 game.result = result.groups.result;
             } else if (result.groups.moves !== undefined) {
-                let fours = result.groups.moves.replace(/(\d+\.?\s+)/g, "");
-                let split = fours.split(/\s/g);
+                let fours = result.groups.moves.trim().replace(/(\d+\.?\s+)/g, "");
+                let split = fours.split(/\s+/g);
                 for (let four of split) {
-                    game.count += 1;
+                    game.count += isEmpty(game.moves[game.count]) ? 0 : 1;
                     game.moves[game.count] = {
                         Move: four,
                     };
