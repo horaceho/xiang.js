@@ -107,13 +107,13 @@ var Xiang = function (fen) {
         }
     }
 
-    var board = Start;
+    var board = [...Start];
     var xiang = {
         "game": Game.Empty,
     }
 
     function load(game) {
-        board = Clear;
+        board = [...Clear];
         var row = 0;
         var col = 0;
         let fen = game.infos.FEN;
@@ -181,10 +181,10 @@ var Xiang = function (fen) {
             return Version;
         },
         start: function () {
-            board = Start;
+            board = [...Start];
         },
         clear: function () {
-            board = Clear;
+            board = [...Clear];
         },
         load: function (game) {
             return load(game);
