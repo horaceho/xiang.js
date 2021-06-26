@@ -1,7 +1,6 @@
 const fs = require("fs");
 
 var Xiang = function () {
-
     // prettier-ignore
     const X = {
         "ChiToEng": {
@@ -92,12 +91,12 @@ var Xiang = function () {
     const Version = "0.0.4";
 
     var xiang = {
-        "board": [...X.Grids.Clear],
-        "infos": { "FEN": X.FENs.Empty },
-        "count": 0,
-        "moves": [{}],
-        "turn": "r",
-        "result": "",
+        board: [...X.Grids.Clear],
+        infos: { FEN: X.FENs.Empty },
+        count: 0,
+        moves: [{}],
+        turn: "r",
+        result: "",
     };
 
     function isEmpty(value) {
@@ -122,14 +121,16 @@ var Xiang = function () {
                 chunks = info.split(/\s+/);
                 key = chunks.shift();
                 value = chunks.join(" ");
-                game.infos[key] = value.replace(/^"|"$/g, '');
+                game.infos[key] = value.replace(/^"|"$/g, "");
             } else if (result.groups.note !== undefined) {
                 note = result.groups.note.replace(/\{|\}/g, "");
                 game.moves[game.count]["Note"] = note;
             } else if (result.groups.result !== undefined) {
                 game.result = result.groups.result;
             } else if (result.groups.moves !== undefined) {
-                let fours = result.groups.moves.trim().replace(/(\d+\.?\s+)/g, "");
+                let fours = result.groups.moves
+                    .trim()
+                    .replace(/(\d+\.?\s+)/g, "");
                 let split = fours.split(/\s+/g);
                 for (let four of split) {
                     game.count += isEmpty(game.moves[game.count]) ? 0 : 1;
@@ -146,31 +147,33 @@ var Xiang = function () {
     function load(filename) {
         let game = open(filename);
         fenToBoard(game.infos.FEN);
-        xiang.infos = {...game.infos};
+        xiang.infos = { ...game.infos };
         xiang.moves = [...game.moves];
         xiang.count = game.count;
         xiang.result = game.result;
     }
 
     function ascii() {
-        const Digits = '１２３４５６７８９';
-        const Soujis = '九八七六五四三二一';
-        const Dimmer = '\x1b[2m';
-        const Normal = '\x1b[0m';
+        const Digits = "１２３４５６７８９";
+        const Soujis = "九八七六五四三二一";
+        const Dimmer = "\x1b[2m";
+        const Normal = "\x1b[0m";
 
         var header = Digits;
         var footer = Soujis;
-        var ascii = '\n';
+        var ascii = "\n";
         for (var row = 3; row <= 3 + 9; row++) {
             for (var col = 3; col <= 3 + 8; col++) {
                 index = (row - 3) * 9 + col - 3;
                 value = xiang.board[row * 16 + col];
-                ascii += (value > 1) ? X.Names[value] : X.Asciis[index];
+                ascii += value > 1 ? X.Names[value] : X.Asciis[index];
             }
             ascii += "\n";
         }
 
-        console.log(Dimmer + header + Normal + ascii + Dimmer + footer + Normal);
+        console.log(
+            Dimmer + header + Normal + ascii + Dimmer + footer + Normal
+        );
     }
 
     function moves() {
@@ -181,13 +184,13 @@ var Xiang = function () {
 
     function clear() {
         xiang = {
-            "board": [...X.Grids.Clear],
-            "infos": { "FEN": X.FENs.Empty },
-            "count": 0,
-            "moves": [{}],
-            "turn": "r",
-            "result": "",
-        }
+            board: [...X.Grids.Clear],
+            infos: { FEN: X.FENs.Empty },
+            count: 0,
+            moves: [{}],
+            turn: "r",
+            result: "",
+        };
     }
 
     function rowColToIndex(row, col) {
@@ -219,7 +222,7 @@ var Xiang = function () {
             }
         }
         if (parts.length > 1) {
-            xiang.turn = (parts[1] === "b") ? "b" : "r";
+            xiang.turn = parts[1] === "b" ? "b" : "r";
         }
     }
 

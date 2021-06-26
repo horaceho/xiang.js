@@ -15,6 +15,9 @@
     "xiang",
     "xiangqi"
   ],
+  "prettier": {
+    "tabWidth": 4
+  },
   "author": "Horace Ho",
   "license": "MIT",
   "bugs": {
