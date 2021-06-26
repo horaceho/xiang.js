@@ -14,11 +14,15 @@ var Xiang = function () {
         },
         "ColorNum": {
             "r": { // 紅
-                "k":  8, "a":  9, "b": 10, "e": 10, "n": 11, "h": 19, "r": 12, "c": 13, "p": 14,
-            },
-            "b": { // 黑
                 "k": 16, "a": 17, "b": 18, "e": 18, "n": 19, "h": 19, "r": 20, "c": 21, "p": 22,
             },
+            "b": { // 黑
+                "k":  8, "a":  9, "b": 10, "e": 10, "n": 11, "h": 19, "r": 12, "c": 13, "p": 14,
+            },
+        },
+        "ColorCol": {
+            "r": [0, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+            "b": [0, 0, 1, 2, 3, 4, 5, 6, 7, 8],
         },
         "PieceNum": {
             "k":  8, "a":  9, "b": 10, "e": 10, "n": 11, "h": 19, "r": 12, "c": 13, "p": 14,
@@ -86,6 +90,31 @@ var Xiang = function () {
             '｜','・','・','・','・','・','・','・','｜',
             '・','－','－','－','－','－','－','－','・',
         ],
+        "Relative": {
+            "前": 1,
+            "中": 2,
+            "后": 2, "後": 2,
+            "二": 2,
+            "三": 3,
+            "四": 4,
+            "五": 5,
+        },
+        "Position": {
+            "一": 1, "１": 1, "1": 1,
+            "二": 2, "２": 2, "2": 2,
+            "三": 3, "３": 3, "3": 3,
+            "四": 4, "４": 4, "4": 4,
+            "五": 5, "５": 5, "5": 5,
+            "六": 6, "６": 6, "6": 6,
+            "七": 7, "７": 7, "7": 7,
+            "八": 8, "８": 8, "8": 8,
+            "九": 9, "９": 9, "9": 9,
+        },
+        "Direction": {
+            "進": 1, "进": 1,
+            "平": 0,
+            "退": -1,
+        },
     };
 
     const Version = "0.0.4";
@@ -128,7 +157,6 @@ var Xiang = function () {
                 game.infos[key] = value.replace(/^"|"$/g, "");
             } else if (result.groups.note !== undefined) {
                 note = result.groups.note.replace(/\{|\}/g, "");
-                console.log(game.moves);
                 if (game.index < 0) {
                     game.remark += game.remark.length > 0 ? "\n" : "";
                     game.remark += note;
@@ -176,8 +204,8 @@ var Xiang = function () {
         var header = Digits;
         var footer = Soujis;
         var ascii = "\n";
-        for (var row = 3; row <= 3 + 9; row++) {
-            for (var col = 3; col <= 3 + 8; col++) {
+        for (let row = 3; row < 3 + 10; row++) {
+            for (let col = 3; col < 3 + 9; col++) {
                 let offset = (row - 3) * 9 + col - 3;
                 value = xiang.board[row * 16 + col];
                 ascii += value > 1 ? X.Names[value] : X.Asciis[offset];
@@ -190,16 +218,74 @@ var Xiang = function () {
         );
     }
 
+    function digit() {
+        let digit = "";
+        for (let row = 3; row < 3 + 10; row++) {
+            for (let col = 3; col < 3 + 9; col++) {
+                value = xiang.board[row * 16 + col];
+                digit += value.toString().padStart(3, " ");
+            }
+            digit += "\n";
+        }
+
+        console.log(digit);
+    }
+
     function moves() {
         for (let move of xiang.moves) {
             console.log(`${move.four ?? ""} {${move.note ?? ""}}`);
         }
     }
 
+    function make(four, turn) {
+        console.log(four);
+        if (four.length !== 4) return false;
+
+        let two = four.substring(0, 2);
+        let char1st = two.substr(0, 1);
+        let char2nd = two.substr(1, 1);
+        let char3rd = four.substr(2, 1);
+        let char4th = four.substr(3, 1);
+        let piece = "";
+        let digit = "";
+        let number = "";
+        let fromRow = -1;
+        let fromCol = -1;
+        let direction = X.Direction[char3rd];
+        let position = X.Position[char4th];
+        let toRow = -1;
+        let toCol = -1;
+        let via = "";
+        if (X.Relative[char1st]) {
+            piece = X.ChiToEng[char2nd];
+            digit = X.Relative[char1st];
+            number = X.ColorNum[turn][piece];
+            via = "位";
+        } else {
+            piece = X.ChiToEng[char1st];
+            digit = X.Position[char2nd];
+            number = X.ColorNum[turn][piece];
+            fromCol = 3 + X.ColorCol[turn][digit];
+            for (fromRow = 3; fromRow < 3 + 10; fromRow++) {
+                if (xiang.board[fromRow * 16 + fromCol] === number) {
+                    break;
+                }
+            }
+            via = "子";
+        }
+        console.log(via, two, turn, char1st, char2nd, piece, digit, number, fromRow-3, fromCol-3, toRow-3, toCol-3, char3rd, direction, char4th, position);
+
+        return true;
+    }
+
     function next() {
         if (xiang.count < xiang.index) {
             xiang.count += 1;
-            xiang.turn = xiang.turn === "b" ? "r" : "b";
+            let four = xiang.moves[xiang.count].four;
+            let turn = xiang.turn;
+            if (make(four, turn)) {
+                xiang.turn = xiang.turn === "b" ? "r" : "b";
+            }
         }
     }
 
@@ -273,8 +359,13 @@ var Xiang = function () {
         turn: function () {
             return xiang.turn;
         },
-        move: function () {
-            return xiang.count >= 0 ? xiang.moves[xiang.count] : {};
+        info: function () {
+            return {
+                fen: xiang.infos.FEN,
+                count: xiang.count,
+                index: xiang.index,
+                four: xiang.count >= 0 ? xiang.moves[xiang.count].four : "",
+            };
         },
         next: function () {
             return next();
@@ -287,6 +378,9 @@ var Xiang = function () {
         },
         ascii: function () {
             return ascii();
+        },
+        digit: function () {
+            return digit();
         },
     };
 };

@@ -42,16 +42,16 @@ interface
             case "turn":
                 console.log(xiang.turn());
                 break;
-            case "move":
-                console.log(xiang.move());
+            case "info":
+                console.log(xiang.info());
                 break;
             case "next":
                 xiang.next();
-                console.log(xiang.move());
+                console.log(xiang.info());
                 break;
             case "prev":
                 xiang.prev();
-                console.log(xiang.move());
+                console.log(xiang.info());
                 break;
             case "dump":
                 console.log(xiang.dump());
