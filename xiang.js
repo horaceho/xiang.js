@@ -93,9 +93,11 @@ var Xiang = function () {
     var xiang = {
         board: [...X.Grids.Clear],
         infos: { FEN: X.FENs.Empty },
-        count: 0,
+        count: -1,
+        index: -1,
         moves: [{}],
         turn: "r",
+        remark: "",
         result: "",
     };
 
@@ -106,8 +108,10 @@ var Xiang = function () {
     function open(filename) {
         let game = {
             infos: {},
-            count: 0,
+            count: -1,
+            index: -1,
             moves: [{}],
+            remark: "",
             result: "",
         };
 
@@ -124,7 +128,13 @@ var Xiang = function () {
                 game.infos[key] = value.replace(/^"|"$/g, "");
             } else if (result.groups.note !== undefined) {
                 note = result.groups.note.replace(/\{|\}/g, "");
-                game.moves[game.count]["Note"] = note;
+                console.log(game.moves);
+                if (game.index < 0) {
+                    game.remark += game.remark.length > 0 ? "\n" : "";
+                    game.remark += note;
+                } else {
+                    game.moves[game.index]["note"] = note;
+                }
             } else if (result.groups.result !== undefined) {
                 game.result = result.groups.result;
             } else if (result.groups.moves !== undefined) {
@@ -133,10 +143,12 @@ var Xiang = function () {
                     .replace(/(\d+\.?\s+)/g, "");
                 let split = fours.split(/\s+/g);
                 for (let four of split) {
-                    game.count += isEmpty(game.moves[game.count]) ? 0 : 1;
-                    game.moves[game.count] = {
-                        Move: four,
-                    };
+                    if (four.length == 4) {
+                        game.index += 1;
+                        game.moves[game.index] = {
+                            four: four,
+                        };
+                    }
                 }
             }
         }
@@ -150,6 +162,8 @@ var Xiang = function () {
         xiang.infos = { ...game.infos };
         xiang.moves = [...game.moves];
         xiang.count = game.count;
+        xiang.index = game.index;
+        xiang.remark = game.remark;
         xiang.result = game.result;
     }
 
@@ -164,9 +178,9 @@ var Xiang = function () {
         var ascii = "\n";
         for (var row = 3; row <= 3 + 9; row++) {
             for (var col = 3; col <= 3 + 8; col++) {
-                index = (row - 3) * 9 + col - 3;
+                let offset = (row - 3) * 9 + col - 3;
                 value = xiang.board[row * 16 + col];
-                ascii += value > 1 ? X.Names[value] : X.Asciis[index];
+                ascii += value > 1 ? X.Names[value] : X.Asciis[offset];
             }
             ascii += "\n";
         }
@@ -178,7 +192,21 @@ var Xiang = function () {
 
     function moves() {
         for (let move of xiang.moves) {
-            console.log(`${move.Move ?? ""} {${move.Note ?? ""}}`);
+            console.log(`${move.four ?? ""} {${move.note ?? ""}}`);
+        }
+    }
+
+    function next() {
+        if (xiang.count < xiang.index) {
+            xiang.count += 1;
+            xiang.turn = xiang.turn === "b" ? "r" : "b";
+        }
+    }
+
+    function prev() {
+        if (xiang.count >= 0) {
+            xiang.count -= 1;
+            xiang.turn = xiang.turn === "b" ? "r" : "b";
         }
     }
 
@@ -186,15 +214,12 @@ var Xiang = function () {
         xiang = {
             board: [...X.Grids.Clear],
             infos: { FEN: X.FENs.Empty },
-            count: 0,
+            count: -1,
+            index: -1,
             moves: [{}],
             turn: "r",
             result: "",
         };
-    }
-
-    function rowColToIndex(row, col) {
-        return (row + 3) * 16 + 3 + col;
     }
 
     function fenToBoard(fen) {
@@ -212,8 +237,8 @@ var Xiang = function () {
                         if (one.match(/\d/)) {
                             col += Number(one);
                         } else {
-                            index = rowColToIndex(row, col);
-                            xiang.board[index] = X.PieceNum[one];
+                            let offset = (row + 3) * 16 + 3 + col;
+                            xiang.board[offset] = X.PieceNum[one];
                             col += 1;
                         }
                     }
@@ -247,6 +272,18 @@ var Xiang = function () {
         },
         turn: function () {
             return xiang.turn;
+        },
+        move: function () {
+            return xiang.count >= 0 ? xiang.moves[xiang.count] : {};
+        },
+        next: function () {
+            return next();
+        },
+        prev: function () {
+            return prev();
+        },
+        dump: function () {
+            return xiang;
         },
         ascii: function () {
             return ascii();
