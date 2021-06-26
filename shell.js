@@ -1,7 +1,5 @@
 const { Xiang } = require('./xiang.js');
 const xiang = new Xiang();
-const { Parse } = require('./parse.js');
-const parse = new Parse();
 const readline = require('readline');
 interface = readline.createInterface(process.stdin, process.stdout);
 
@@ -20,8 +18,8 @@ interface.on('line', function (line) {
         case 'moves':
             xiang.moves();
             break;
-        case 'clear':
-            xiang.clear();
+        case 'empty':
+            xiang.empty();
             xiang.ascii();
             break;
         case 'start':
@@ -32,12 +30,14 @@ interface.on('line', function (line) {
             console.log(xiang.version());
             break;
         case 'load':
-            game = parse.open(value);
-            moves = xiang.load(game);
+            xiang.load(value);
             xiang.ascii();
             break;
         case 'fen':
             console.log(xiang.fen());
+            break;
+        case 'turn':
+            console.log(xiang.turn());
             break;
         case 'exit':
             console.log('Bye!');

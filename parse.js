@@ -8,7 +8,7 @@ var Parse = function (text) {
     }
 
     function open(filename) {
-        var game = {
+        let game = {
             infos: {},
             count: 0,
             moves: [{}],

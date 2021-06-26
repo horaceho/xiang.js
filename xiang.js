@@ -1,4 +1,7 @@
-var Xiang = function (fen) {
+const { Parse } = require('./parse.js');
+const parse = new Parse();
+
+var Xiang = function () {
 
     const Space = '　';
 
@@ -24,8 +27,8 @@ var Xiang = function (fen) {
 
     const Names = [
         '・', '・', '・', '・', '・', '・', '・', '・',
-        '將', '士', '象', '馬', '車', '砲', '卒', '・',
-        '帥', '仕', '相', '傌', '俥', '炮', '兵', '・',
+        '將', '士', '象', '馬', '車', '砲', '卒', '・', // k:8, a:9 ... p:14 
+        '帥', '仕', '相', '傌', '俥', '炮', '兵', '・', // K:16, A:17 ... P:22
     ];
 
     const Indexes = {
@@ -43,7 +46,7 @@ var Xiang = function (fen) {
         "K": K, "A": A, "B": B, "E": E, "N": N, "H": H, "R": R, "C": C, "P": P,
     }
 
-    const Grids = [
+    const Asciis = [
         '・','－','－','－','－','－','－','－','・',
         '｜','・','・','・','・','・','・','・','｜',
         '｜','＋','・','・','・','・','・','＋','｜',
@@ -56,97 +59,50 @@ var Xiang = function (fen) {
         '・','－','－','－','－','－','－','－','・',
     ];
 
-    const Version = "0.0.3";
+    const Version = "0.0.4";
 
-    const Clear = [
-        1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ];
-
-    const Start = [
-        1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, r, n, b, a, k, a, b, n, r, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, c, 1, 1, 1, 1, 1, c, 1, 0, 0, 0, 0,
-        0, 0, 0, p, 1, p, 1, p, 1, p, 1, p, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, P, 1, P, 1, P, 1, P, 1, P, 0, 0, 0, 0,
-        0, 0, 0, 1, C, 1, 1, 1, 1, 1, C, 1, 0, 0, 0, 0,
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-        0, 0, 0, R, N, B, A, K, A, B, N, R, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ];
-
-    Game = {
-        "Empty": {
-            infos: {
-                "FEN": "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1",
-            },
-            count: 0,
-            moves: [{}],
-            result: "",
-        }
+    const Grids = {
+        "Clear":  [
+            1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        ],
     }
 
-    var board = [...Start];
+    const FENs = {
+        "Empty": "9/9/9/9/9/9/9/9/9/9 w - - 0 1",
+        "Start": "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1",
+    }
+
     var xiang = {
-        "game": Game.Empty,
-    }
+        "board": [...Grids.Clear],
+        "infos": { "FEN": FENs.Empty },
+        "count": 0,
+        "moves": [{}],
+        "turn": "r",
+        "result": "",
+    };
 
-    function load(game) {
-        board = [...Clear];
-        var row = 0;
-        var col = 0;
-        let fen = game.infos.FEN;
-        let parts = fen.split(" ");
-        if (parts.length === 6) {
-            let lines = parts[0].split("/");
-            if (lines.length === 10) {
-                for (let line of lines) {
-                    col = 0;
-                    let chars = line.split("");
-                    for (let one of chars) {
-                        if (one.match(/\d/)) {
-                            col += Number(one);
-                        } else {
-                            place(row, col, one);
-                            col += 1;
-                        }
-                    }
-                    row += 1;
-                }
-            }
-        }
-
-        if (row === 10 && col === 9) {
-            xiang.game = game;
-        }
-
-        return game.count;
-    }
-
-    function place(row, col, one) {
-        index = (row + 3) * 16 + 3 + col;
-        board[index] = Pieces[one];
+    function load(filename) {
+        let game = parse.open(filename);
+        fenToBoard(game.infos.FEN);
+        xiang.infos = {...game.infos};
+        xiang.moves = [...game.moves];
+        xiang.count = game.count;
+        xiang.result = game.result;
     }
 
     function ascii() {
@@ -161,8 +117,8 @@ var Xiang = function (fen) {
         for (var row = 3; row <= 3 + 9; row++) {
             for (var col = 3; col <= 3 + 8; col++) {
                 index = (row - 3) * 9 + col - 3;
-                value = board[row * 16 + col];
-                ascii += (value > 1) ? Names[value] : Grids[index];
+                value = xiang.board[row * 16 + col];
+                ascii += (value > 1) ? Names[value] : Asciis[index];
             }
             ascii += "\n";
         }
@@ -171,8 +127,48 @@ var Xiang = function (fen) {
     }
 
     function moves() {
-        for (let move of xiang.game.moves) {
+        for (let move of xiang.moves) {
             console.log(`${move.Move ?? ""} {${move.Note ?? ""}}`);
+        }
+    }
+
+    function clear() {
+        xiang = {
+            "board": [...Grids.Clear],
+            "infos": { "FEN": FENs.Empty },
+            "count": 0,
+            "moves": [{}],
+            "turn": "r",
+            "result": "",
+        }
+    }
+
+    function fenToBoard(fen) {
+        clear();
+        let parts = fen.split(" ");
+        let row = 0;
+        let col = 0;
+        if (parts.length > 0) {
+            let lines = parts[0].split("/");
+            if (lines.length === 10) {
+                for (let line of lines) {
+                    col = 0;
+                    let chars = line.split("");
+                    for (let one of chars) {
+                        if (one.match(/\d/)) {
+                            col += Number(one);
+                        } else {
+                            index = (row + 3) * 16 + 3 + col;
+                            xiang.board[index] = Pieces[one];
+                            col += 1;
+                        }
+                    }
+                    row += 1;
+                }
+            }
+        }
+        if (parts.length > 1) {
+            xiang.turn = (parts[1] === "b") ? "b" : "r";
         }
     }
 
@@ -181,19 +177,22 @@ var Xiang = function (fen) {
             return Version;
         },
         start: function () {
-            board = [...Start];
+            fenToBoard(FENs.Start);
         },
-        clear: function () {
-            board = [...Clear];
+        empty: function () {
+            fenToBoard(FENs.Empty);
         },
-        load: function (game) {
-            return load(game);
+        load: function (filename) {
+            return load(filename);
         },
         moves: function () {
             return moves();
         },
         fen: function () {
-            return xiang.game.infos.FEN;
+            return xiang.infos.FEN;
+        },
+        turn: function () {
+            return xiang.turn;
         },
         ascii: function () {
             return ascii();
