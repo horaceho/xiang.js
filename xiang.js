@@ -3,6 +3,30 @@ const fs = require("fs");
 var Xiang = function () {
     // prettier-ignore
     const X = {
+        "Grids": {
+            "Clear":  [
+                1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            ],
+        },
+        "FENs": {
+            "Empty": "9/9/9/9/9/9/9/9/9/9 w - - 0 1",
+            "Start": "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1",
+        },
         "ChiToEng": {
             "將": "k", "将": "k", "帥": "k", "帅": "k",
             "仕": "a", "士": "a",
@@ -72,29 +96,31 @@ var Xiang = function () {
             "進": '+', "进": '+',
             "退": '-',
         },
-        "Grids": {
-            "Clear":  [
-                1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-                0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        },
-        "FENs": {
-            "Empty": "9/9/9/9/9/9/9/9/9/9 w - - 0 1",
-            "Start": "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1",
+        "MoveIndexAB": {
+            "a4-5": [168, 183],
+            "a4+5": [200, 183],
+            "a5-4": [183, 198],
+            "a5+4": [183, 166],
+            "a5-6": [183, 200],
+            "a5+6": [183, 168],
+            "a6-5": [168, 183],
+            "a6+5": [200, 183],
+            "b1-3": [163, 197],
+            "b1+3": [163, 133],
+            "b3-1": [133, 163],
+            "b3+1": [197, 163],
+            "b3-5": [133, 167],
+            "b3+5": [197, 167],
+            "b5-3": [167, 133],
+            "b5+3": [167, 197],
+            "b5-7": [167, 201],
+            "b5+7": [167, 137],
+            "b7-5": [137, 167],
+            "b7+5": [201, 167],
+            "b7-9": [137, 171],
+            "b7+9": [201, 171],
+            "b9-7": [171, 201],
+            "b9+7": [171, 137],
         },
         "Space": '　',
         "Names": [
@@ -251,7 +277,64 @@ var Xiang = function () {
     }
 
     function make(move, turn) {
-        console.log(move, turn);
+        let piece = -1;
+        let index = -1;
+        let from = -1;
+        let to = -1;
+        let fromTo = X.MoveIndexAB[move]; // 仕象
+        if (fromTo) {
+            from = fromTo[0];
+            to = fromTo[1];
+            console.log("仕象", move, turn, fromTo, piece, index);
+        } else {
+            let fromRow = -1;
+            let fromCol = -1;
+            let toRow = -1;
+            let toCol = -1;
+            if (X.Relative[move[0]]) { // 前中後二三四五
+                piece = move[1];
+                index = X.Relative[move[0]];
+            } else {
+                piece = move[0];
+                index = X.Position[move[1]];
+                let number = X.SideDigit[turn][piece];
+                console.log(piece, index, number);
+                fromCol = X.SideCol[turn][index];
+                for (fromRow = 0; fromRow < 10; fromRow++) {
+                    let offset = offsetFrom(fromRow, fromCol);
+                    if (xiang.board[offset] === number) {
+                        break;
+                    }
+                }
+                from = offsetFrom(fromRow, fromCol);
+
+                if (piece === "n") {
+
+                } else {
+                    let direction = move[2];
+                    let value = X.Position[move[3]];
+                    console.log(direction, value);
+                    if (direction == '=') { // 平
+                        toRow = fromRow;
+                        toCol = (turn === "r") ? 9 - value : value - 1;
+                    } else if (direction == '+') { // 進
+                        toRow = fromRow - value;
+                        toCol = fromCol;
+                    } else if (direction == '-') { // 退
+                        toRow = fromRow;
+                        toCol = value - 1;
+                    }
+                }
+                to = offsetFrom(toRow, toCol);
+            }
+            console.log("其他", move, turn, fromRow, fromCol, from, toRow, toCol, to, piece, index);
+            if (isInGrid(fromRow, fromCol) && isInGrid(toRow, toCol)) {
+                xiang.board[to] = xiang.board[from];
+                xiang.board[from] = 1;
+            } else {
+                console.log("Make move out of grid", fromRow, fromCol, toRow, toCol);
+            }
+        }
     }
 
     function next() {
