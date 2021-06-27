@@ -99,28 +99,28 @@ var Xiang = function () {
         "MoveIndexAB": {
             "a4-5": [168, 183],
             "a4+5": [200, 183],
-            "a5-4": [183, 198],
-            "a5+4": [183, 166],
-            "a5-6": [183, 200],
-            "a5+6": [183, 168],
-            "a6-5": [168, 183],
-            "a6+5": [200, 183],
-            "b1-3": [163, 197],
-            "b1+3": [163, 133],
-            "b3-1": [133, 163],
-            "b3+1": [197, 163],
-            "b3-5": [133, 167],
-            "b3+5": [197, 167],
-            "b5-3": [167, 133],
-            "b5+3": [167, 197],
-            "b5-7": [167, 201],
-            "b5+7": [167, 137],
-            "b7-5": [137, 167],
-            "b7+5": [201, 167],
-            "b7-9": [137, 171],
-            "b7+9": [201, 171],
-            "b9-7": [171, 201],
-            "b9+7": [171, 137],
+            "a5-4": [183, 200],
+            "a5+4": [183, 168],
+            "a5-6": [183, 198],
+            "a5+6": [183, 166],
+            "a6-5": [166, 183],
+            "a6+5": [198, 183],
+            "b1-3": [171, 201],
+            "b1+3": [171, 137],
+            "b3-1": [137, 171],
+            "b3+1": [201, 171],
+            "b3-5": [137, 167],
+            "b3+5": [201, 167],
+            "b5-3": [167, 201],
+            "b5+3": [167, 137],
+            "b5-7": [167, 197],
+            "b5+7": [167, 133],
+            "b7-5": [133, 167],
+            "b7+5": [197, 167],
+            "b7-9": [133, 163],
+            "b7+9": [197, 163],
+            "b9-7": [163, 197],
+            "b9+7": [163, 133],
         },
         "Space": '　',
         "Names": [
@@ -187,7 +187,6 @@ var Xiang = function () {
                 value = chunks.join(" ");
                 xiang.infos[key] = value.replace(/^"|"$/g, "");
                 if (key.toUpperCase() === "FEN") {
-                    console.log(value);
                     fenToBoard(value);
                     turn = xiang.turn;
                 }
@@ -276,30 +275,33 @@ var Xiang = function () {
         }
     }
 
-    function make(move, turn) {
+    function flip(index) {
+        return 254 - index;
+    }
+
+    function make(move) {
         let piece = -1;
-        let index = -1;
         let from = -1;
         let to = -1;
-        let fromTo = X.MoveIndexAB[move]; // 仕象
+        let fromTo = X.MoveIndexAB[move.eng]; // 仕象
         if (fromTo) {
-            from = fromTo[0];
-            to = fromTo[1];
-            console.log("仕象", move, turn, fromTo, piece, index);
+            from = (move.turn === "r") ? fromTo[0] : flip(fromTo[0]);
+            to = (move.turn === "r") ? fromTo[1] : flip(fromTo[1]);
+            piece = xiang.board[from];
         } else {
             let fromRow = -1;
             let fromCol = -1;
             let toRow = -1;
             let toCol = -1;
-            if (X.Relative[move[0]]) { // 前中後二三四五
-                piece = move[1];
-                index = X.Relative[move[0]];
+            let index = -1;
+            if (X.Relative[move.eng[0]]) { // 前中後二三四五
+                piece = move.eng[1];
+                index = X.Relative[move.eng[0]];
             } else {
-                piece = move[0];
-                index = X.Position[move[1]];
-                let number = X.SideDigit[turn][piece];
-                console.log(piece, index, number);
-                fromCol = X.SideCol[turn][index];
+                piece = move.eng[0];
+                index = X.Position[move.eng[1]];
+                let number = X.SideDigit[move.turn][piece];
+                fromCol = X.SideCol[move.turn][index];
                 for (fromRow = 0; fromRow < 10; fromRow++) {
                     let offset = offsetFrom(fromRow, fromCol);
                     if (xiang.board[offset] === number) {
@@ -308,39 +310,42 @@ var Xiang = function () {
                 }
                 from = offsetFrom(fromRow, fromCol);
 
+                let direction = move.eng[2];
+                let value = X.Position[move.eng[3]];
                 if (piece === "n") {
-
+                    let diff = Math.abs(index - value) === 1 ? 2 : 1;
+                    if (direction === "+") {
+                        toRow = fromRow + ((move.turn === "r") ? -diff : diff);
+                    } else {
+                        toRow = fromRow - ((move.turn === "r") ? -diff : diff);
+                    }
+                    toCol = (move.turn === "r") ? 9 - value : value - 1;
                 } else {
-                    let direction = move[2];
-                    let value = X.Position[move[3]];
-                    console.log(direction, value);
                     if (direction == '=') { // 平
                         toRow = fromRow;
-                        toCol = (turn === "r") ? 9 - value : value - 1;
+                        toCol = ((move.turn === "r") ? 9 - value : value - 1);
                     } else if (direction == '+') { // 進
-                        toRow = fromRow - value;
+                        toRow = fromRow += ((move.turn === "r") ? -value : value);
                         toCol = fromCol;
                     } else if (direction == '-') { // 退
-                        toRow = fromRow;
-                        toCol = value - 1;
+                        toRow = fromRow -= ((move.turn === "r") ? -value : value);
+                        toCol = fromCol;
                     }
                 }
                 to = offsetFrom(toRow, toCol);
             }
-            console.log("其他", move, turn, fromRow, fromCol, from, toRow, toCol, to, piece, index);
-            if (isInGrid(fromRow, fromCol) && isInGrid(toRow, toCol)) {
-                xiang.board[to] = xiang.board[from];
-                xiang.board[from] = 1;
-            } else {
-                console.log("Make move out of grid", fromRow, fromCol, toRow, toCol);
-            }
+        }
+
+        if (from !== -1 && to !== -1) {
+            xiang.board[to] = xiang.board[from];
+            xiang.board[from] = 1;
         }
     }
 
     function next() {
         if (xiang.count < xiang.index) {
             xiang.count += 1;
-            make(xiang.moves[xiang.count].eng, xiang.moves[xiang.count].turn);
+            make(xiang.moves[xiang.count]);
         }
     }
 
