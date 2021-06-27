@@ -18,6 +18,12 @@ interface
             case "ascii":
                 xiang.ascii();
                 break;
+            case "index":
+                xiang.index();
+                break;
+            case "digit":
+                xiang.digit();
+                break;
             case "moves":
                 xiang.moves();
                 break;
