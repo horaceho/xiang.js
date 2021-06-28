@@ -223,8 +223,12 @@ var Xiang = function () {
     function ascii() {
         const Digits = "１２３４５６７８９";
         const Soujis = "九八七六五四三二一";
+        const Reset = "\x1b[0m";
         const Dimmer = "\x1b[2m";
         const Normal = "\x1b[0m";
+        const Bright = "\x1b[1m";
+        const Red = "\x1b[31m";
+        const White = "\x1b[37m";
 
         var header = Digits;
         var footer = Soujis;
@@ -233,7 +237,15 @@ var Xiang = function () {
             for (let col = 3; col < 3 + 9; col++) {
                 let offset = (row - 3) * 9 + col - 3;
                 value = xiang.board[row * 16 + col];
-                ascii += value > 1 ? X.Names[value] : X.Asciis[offset];
+                if (value > 1) {
+                    ascii += (value < 16 ? White : Red);
+                    ascii += X.Names[value];
+                    ascii += White;
+                } else {
+                    ascii += Dimmer;
+                    ascii += X.Asciis[offset]
+                    ascii += Normal;
+                }
             }
             ascii += "\n";
         }
