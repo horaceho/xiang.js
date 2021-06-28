@@ -147,7 +147,7 @@ var Xiang = function () {
         ],
     };
 
-    const Version = "0.0.9";
+    const Version = "0.1.0";
 
     var xiang = {
         board: [...X.Grids.Clear],
@@ -177,11 +177,9 @@ var Xiang = function () {
         };
     };
 
-    function load(filename) {
+    function parse(text) {
         clear();
-        var text = fs.readFileSync(filename, "utf8");
-        let regex =
-            /(?<setup>\[.+\])|(?<note>{[\S\s]*?})|(?<result>\*|\d-\d|\d\/\d-\d\/\d)|(?<moves>.+)/gm;
+        let regex = /(?<setup>\[.+\])|(?<note>{[\S\s]*?})|(?<result>\*|\d-\d|\d\/\d-\d\/\d)|(?<moves>.+)/gm;
         let results = text.matchAll(regex);
         let turn = "r";
         for (let result of results) {
@@ -223,6 +221,11 @@ var Xiang = function () {
                 }
             }
         }
+    }
+
+    function load(filename) {
+        let text = fs.readFileSync(filename, "utf8");
+        parse(text);
     }
 
     function ascii() {
