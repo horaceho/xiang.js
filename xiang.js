@@ -147,7 +147,7 @@ var Xiang = function () {
         ],
     };
 
-    const Version = "0.0.7";
+    const Version = "0.0.8";
 
     var xiang = {
         board: [...X.Grids.Clear],
@@ -293,7 +293,7 @@ var Xiang = function () {
         let index = 0;
         for (let row = 3; row < 3 + 10; row++) {
             for (let col = 3; col < 3 + 9; col++) {
-                value = xiang.board[row * 16 + col];
+                let value = xiang.board[row * 16 + col];
                 chi = X.ChiNames[value];
                 eng = X.EngNames[value];
                 grids.push({
