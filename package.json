@@ -1,7 +1,7 @@
 {
   "name": "xiang.js",
-  "version": "0.0.5",
-  "description": "A simple Javascript Xiangqi AI",
+  "version": "0.0.6",
+  "description": "A simple Javascript Xiangqi library",
   "main": "xiang.js",
   "scripts": {
     "test": "echo \"No error\" && exit 1"

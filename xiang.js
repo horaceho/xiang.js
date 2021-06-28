@@ -142,7 +142,7 @@ var Xiang = function () {
         ],
     };
 
-    const Version = "0.0.5";
+    const Version = "0.0.6";
 
     var xiang = {
         board: [...X.Grids.Clear],
