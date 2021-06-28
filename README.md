@@ -1,12 +1,10 @@
 # xiang.js
 
-xiang.js is a Javascript Xiangqi library with a simple AI.
+xiang.js is simple Javascript Xiangqi (中國象棋) library.
 
 ### To run
 ```
 % node shell.js
-> version
-0.0.4
 > load games/许银川让九子对聂棋圣.pgn
 １２３４５６７８９
 車馬象士將士象馬車

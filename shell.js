@@ -16,31 +16,34 @@ interface
                 console.log(`${key} "${value}"!`);
                 break;
             case "ascii":
-                xiang.ascii();
+                console.log(xiang.ascii());
                 break;
             case "index":
-                xiang.index();
+                console.log(xiang.index());
                 break;
             case "digit":
-                xiang.digit();
+                console.log(xiang.digit());
                 break;
             case "moves":
-                xiang.moves();
+                console.log(xiang.moves());
+                break;
+            case "grids":
+                console.log(xiang.grids());
                 break;
             case "empty":
                 xiang.empty();
-                xiang.ascii();
+                console.log(xiang.ascii());
                 break;
             case "start":
                 xiang.start();
-                xiang.ascii();
+                console.log(xiang.ascii());
                 break;
             case "version":
                 console.log(xiang.version());
                 break;
             case "load":
                 xiang.load(value);
-                xiang.ascii();
+                console.log(xiang.ascii());
                 break;
             case "fen":
                 console.log(xiang.fen());
