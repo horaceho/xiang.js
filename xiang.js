@@ -123,10 +123,15 @@ var Xiang = function () {
             "b9+7": [163, 133],
         },
         "Space": '　',
-        "Names": [
+        "ChiNames": [
             '・', '・', '・', '・', '・', '・', '・', '・',
-            '將', '士', '象', '馬', '車', '砲', '卒', '・', // k:8, a:9 ... p:14 
+            '將', '士', '象', '馬', '車', '砲', '卒', '・', // k:8, a:9 ... p:14
             '帥', '仕', '相', '傌', '俥', '炮', '兵', '・', // K:16, A:17 ... P:22
+        ],
+        "EngNames": [
+            '.', '.', '.', '.', '.', '.', '.', '.',
+            'k', 'a', 'b', 'n', 'r', 'c', 'p', '.', // k:8, a:9 ... p:14
+            'K', 'A', 'B', 'N', 'R', 'C', 'P', '.', // K:16, A:17 ... P:22
         ],
         "Asciis": [
             '・','－','－','－','－','－','－','－','・',
@@ -142,7 +147,7 @@ var Xiang = function () {
         ],
     };
 
-    const Version = "0.0.6";
+    const Version = "0.0.7";
 
     var xiang = {
         board: [...X.Grids.Clear],
@@ -239,7 +244,7 @@ var Xiang = function () {
                 value = xiang.board[row * 16 + col];
                 if (value > 1) {
                     ascii += (value < 16 ? White : Red);
-                    ascii += X.Names[value];
+                    ascii += X.ChiNames[value];
                     ascii += White;
                 } else {
                     ascii += Dimmer;
@@ -250,9 +255,7 @@ var Xiang = function () {
             ascii += "\n";
         }
 
-        console.log(
-            Dimmer + header + Normal + ascii + Dimmer + footer + Normal
-        );
+        return Dimmer + header + Normal + ascii + Dimmer + footer + Normal
     }
 
     function digit() {
@@ -265,7 +268,7 @@ var Xiang = function () {
             digit += "\n";
         }
 
-        console.log(digit);
+        return digit;
     }
 
     function index() {
@@ -278,13 +281,39 @@ var Xiang = function () {
             index += "\n";
         }
 
-        console.log(index);
+        return index;
     }
 
     function moves() {
-        for (let move of xiang.moves) {
-            console.log(`${move.chi ?? ""} ${move.turn ?? ""} ${move.eng ?? ""} {${move.note ?? ""}}`);
+        return xiang.moves;
+    }
+
+    function grids() {
+        let grids = [];
+        let index = 0;
+        for (let row = 3; row < 3 + 10; row++) {
+            for (let col = 3; col < 3 + 9; col++) {
+                value = xiang.board[row * 16 + col];
+                chi = X.ChiNames[value];
+                eng = X.EngNames[value];
+                grids.push({
+                    "index": index,
+                    "value": value,
+                    "chi": X.ChiNames[value],
+                    "eng": X.EngNames[value],
+                })
+                index += 1;
+            }
         }
+        return grids;
+    }
+
+    function fen() {
+        return xiang.infos.FEN;
+    }
+
+    function turn() {
+        return xiang.turn;
     }
 
     function flip(index) {
@@ -366,7 +395,6 @@ var Xiang = function () {
                     toRow = fromRow - ((move.turn === "r") ? -diff : diff);
                 }
                 toCol = (move.turn === "r") ? 9 - value : value - 1;
-                console.log(move.chi.substr(0, 2), move.chi.substr(2, 2), piece, direction, value, fromRow, fromCol, toRow, toCol, diff);
             } else {
                 if (direction == '=') { // 平
                     toRow = fromRow;
@@ -461,11 +489,14 @@ var Xiang = function () {
         moves: function () {
             return moves();
         },
+        grids: function () {
+            return grids();
+        },
         fen: function () {
-            return xiang.infos.FEN;
+            return fen();
         },
         turn: function () {
-            return xiang.turn;
+            return turn();
         },
         info: function () {
             return {
