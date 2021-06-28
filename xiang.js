@@ -4,7 +4,7 @@ var Xiang = function () {
     // prettier-ignore
     const X = {
         "Grids": {
-            "Clear":  [
+            "Clear": [
                 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -142,7 +142,7 @@ var Xiang = function () {
         ],
     };
 
-    const Version = "0.0.4";
+    const Version = "0.0.5";
 
     var xiang = {
         board: [...X.Grids.Clear],
@@ -410,7 +410,7 @@ var Xiang = function () {
     }
 
     function chiToEng(chi) {
-        let eng = chi.split('').map( (one) => X.ChiToEng[one] ).join('');
+        let eng = chi.split('').map((one) => X.ChiToEng[one]).join('');
         return eng;
     }
 
