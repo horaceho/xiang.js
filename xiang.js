@@ -306,46 +306,80 @@ var Xiang = function () {
             let toRow = -1;
             let toCol = -1;
             let index = -1;
-            if (X.Relative[move.eng[0]]) { // 前中後二三四五
+            if (X.Relative[move.chi[0]]) { // 前中後二三四五
                 piece = move.eng[1];
-                index = X.Relative[move.eng[0]];
+                let match = X.Relative[move.chi[0]];
+                let count = 0;
+                let number = X.SideDigit[move.turn][piece];
+                if (move.turn === "r") {
+                    Red:
+                    for (fromCol = 0; fromCol < 10; fromCol++) {
+                        for (fromRow = 0; fromRow < 10; fromRow++) { // from top to bottom
+                            let offset = offsetFrom(fromRow, fromCol);
+                            if (xiang.board[offset] === number) {
+                                count += 1; // found one
+                                if (count === match) {
+                                    from = offset;
+                                    index = 9 - fromCol;
+                                    break Red;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Black:
+                    for (fromCol = 0; fromCol < 10; fromCol++) {
+                        for (fromRow = 9; fromRow <= 0; fromRow--) { // from bottom to top
+                            let offset = offsetFrom(fromRow, fromCol);
+                            if (xiang.board[offset] === number) {
+                                count += 1; // found one
+                                if (count === match) {
+                                    from = offset;
+                                    index = fromCol + 1;
+                                    break Black;
+                                }
+                            }
+                        }
+                    }
+                }
             } else {
                 piece = move.eng[0];
-                index = X.Position[move.eng[1]];
+                index = X.Position[move.chi[1]];
                 let number = X.SideDigit[move.turn][piece];
                 fromCol = X.SideCol[move.turn][index];
                 for (fromRow = 0; fromRow < 10; fromRow++) {
                     let offset = offsetFrom(fromRow, fromCol);
                     if (xiang.board[offset] === number) {
+                        from = offsetFrom(fromRow, fromCol);
                         break;
                     }
                 }
-                from = offsetFrom(fromRow, fromCol);
-
-                let direction = move.eng[2];
-                let value = X.Position[move.eng[3]];
-                if (piece === "n") {
-                    let diff = Math.abs(index - value) === 1 ? 2 : 1;
-                    if (direction === "+") {
-                        toRow = fromRow + ((move.turn === "r") ? -diff : diff);
-                    } else {
-                        toRow = fromRow - ((move.turn === "r") ? -diff : diff);
-                    }
-                    toCol = (move.turn === "r") ? 9 - value : value - 1;
-                } else {
-                    if (direction == '=') { // 平
-                        toRow = fromRow;
-                        toCol = ((move.turn === "r") ? 9 - value : value - 1);
-                    } else if (direction == '+') { // 進
-                        toRow = fromRow += ((move.turn === "r") ? -value : value);
-                        toCol = fromCol;
-                    } else if (direction == '-') { // 退
-                        toRow = fromRow -= ((move.turn === "r") ? -value : value);
-                        toCol = fromCol;
-                    }
-                }
-                to = offsetFrom(toRow, toCol);
             }
+
+            let direction = move.eng[2];
+            let value = X.Position[move.chi[3]];
+            if (piece === "n") {
+                let diff = (Math.abs(index - value) === 1) ? 2 : 1;
+                if (direction === "+") {
+                    toRow = fromRow + ((move.turn === "r") ? -diff : diff);
+                } else {
+                    toRow = fromRow - ((move.turn === "r") ? -diff : diff);
+                }
+                toCol = (move.turn === "r") ? 9 - value : value - 1;
+                console.log(move.chi.substr(0, 2), move.chi.substr(2, 2), piece, direction, value, fromRow, fromCol, toRow, toCol, diff);
+            } else {
+                if (direction == '=') { // 平
+                    toRow = fromRow;
+                    toCol = ((move.turn === "r") ? 9 - value : value - 1);
+                } else if (direction == '+') { // 進
+                    toRow = fromRow += ((move.turn === "r") ? -value : value);
+                    toCol = fromCol;
+                } else if (direction == '-') { // 退
+                    toRow = fromRow -= ((move.turn === "r") ? -value : value);
+                    toCol = fromCol;
+                }
+            }
+            to = offsetFrom(toRow, toCol);
         }
 
         if (from !== -1 && to !== -1) {
