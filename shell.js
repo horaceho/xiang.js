@@ -43,7 +43,9 @@ interface
                 break;
             case "load":
                 xiang.load(value);
-                console.log(xiang.ascii());
+                break;
+            case "open":
+                xiang.open(value);
                 break;
             case "fen":
                 console.log(xiang.fen());

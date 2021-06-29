@@ -1,4 +1,5 @@
 const fs = require("fs");
+const https = require('https');
 
 var Xiang = function () {
     // prettier-ignore
@@ -60,7 +61,7 @@ var Xiang = function () {
                 "k": 16, "a": 17, "b": 18, "e": 18, "n": 19, "h": 19, "r": 20, "c": 21, "p": 22,
             },
             "b": { // 黑
-                "k":  8, "a":  9, "b": 10, "e": 10, "n": 11, "h": 19, "r": 12, "c": 13, "p": 14,
+                "k": 8, "a": 9, "b": 10, "e": 10, "n": 11, "h": 19, "r": 12, "c": 13, "p": 14,
             },
         },
         "SideCol": {
@@ -68,7 +69,7 @@ var Xiang = function () {
             "b": [0, 0, 1, 2, 3, 4, 5, 6, 7, 8],
         },
         "PieceDigit": {
-            "k":  8, "a":  9, "b": 10, "e": 10, "n": 11, "h": 19, "r": 12, "c": 13, "p": 14,
+            "k": 8, "a": 9, "b": 10, "e": 10, "n": 11, "h": 19, "r": 12, "c": 13, "p": 14,
             "K": 16, "A": 17, "B": 18, "E": 18, "N": 19, "H": 19, "R": 20, "C": 21, "P": 22,
         },
         "Relative": {
@@ -147,7 +148,7 @@ var Xiang = function () {
         ],
     };
 
-    const Version = "0.1.0";
+    const Version = "0.1.1";
 
     var xiang = {
         board: [...X.Grids.Clear],
@@ -221,6 +222,20 @@ var Xiang = function () {
                 }
             }
         }
+    }
+
+    function open(url) {
+        let data = '';
+        https.get(url, response => {
+            response.on('data', chunk => {
+                data += chunk;
+            });
+            response.on('end', () => {
+                parse(data);
+            })
+        }).on('error', error => {
+            console.log(error.message);
+        });
     }
 
     function load(filename) {
@@ -483,6 +498,9 @@ var Xiang = function () {
         },
         empty: function () {
             fenToBoard(X.FENs.Empty);
+        },
+        open: function (url) {
+            return open(url);
         },
         load: function (filename) {
             return load(filename);
